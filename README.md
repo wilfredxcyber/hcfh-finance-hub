@@ -1,73 +1,117 @@
-# Welcome to your Lovable project
+# HCFH - Herckerton Community Finance Hub
 
-## Project info
+A decentralized finance (DeFi) platform built with React, TypeScript, and Ethers.js. Connect your wallet to access savings and borrowing features with competitive interest rates.
 
-**URL**: https://lovable.dev/projects/ce6568e1-880d-4b25-a1a5-016fb8db774d
+## Features
 
-## How can I edit this code?
+- **Wallet Integration**: Seamless MetaMask connection with account management
+- **Savings**: Deposit crypto assets and earn competitive APY (currently 5.25%)
+- **Borrowing**: Borrow against your crypto collateral with transparent interest rates (6.75%)
+- **Dashboard**: Real-time overview of your balances, savings, loans, and interest earned
+- **Responsive Design**: Beautiful, mobile-friendly interface with modern DeFi aesthetics
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS + shadcn-ui components
+- **Web3**: Ethers.js v6 for blockchain interaction
+- **Routing**: React Router v6
+- **State Management**: TanStack Query
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/ce6568e1-880d-4b25-a1a5-016fb8db774d) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js & npm ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- MetaMask browser extension
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate to the project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
+# Install dependencies
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Usage
 
-**Use GitHub Codespaces**
+1. Click "Connect Wallet" to connect your MetaMask wallet
+2. Navigate to **Dashboard** to view your portfolio overview
+3. Visit **Savings** to deposit funds and earn interest
+4. Visit **Borrowing** to take loans against your collateral
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Project Structure
 
-## What technologies are used for this project?
+```
+src/
+├── components/       # Reusable UI components
+│   ├── Layout.tsx   # Main layout with navigation
+│   └── ui/          # shadcn-ui components
+├── contexts/        # React context providers
+│   └── WalletContext.tsx  # Wallet connection state
+├── pages/          # Route pages
+│   ├── Dashboard.tsx
+│   ├── Savings.tsx
+│   └── Borrowing.tsx
+└── App.tsx         # Main app component
+```
 
-This project is built with:
+## Development
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Edit with Lovable
 
-## How can I deploy this project?
+Visit the [Lovable Project](https://lovable.dev/projects/ce6568e1-880d-4b25-a1a5-016fb8db774d) and start prompting. Changes made via Lovable will be committed automatically to this repo.
 
-Simply open [Lovable](https://lovable.dev/projects/ce6568e1-880d-4b25-a1a5-016fb8db774d) and click on Share -> Publish.
+### Local Development
 
-## Can I connect a custom domain to my Lovable project?
+Make changes locally and push to GitHub. Pushed changes will also be reflected in Lovable thanks to bidirectional sync.
 
-Yes, you can!
+## Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Frontend Deployment
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Open [Lovable](https://lovable.dev/projects/ce6568e1-880d-4b25-a1a5-016fb8db774d)
+2. Click **Publish** (top right on desktop, bottom right on mobile)
+3. Click **Update** to deploy your latest changes
+
+### Custom Domain
+
+Connect a custom domain via Project > Settings > Domains. [Learn more](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Smart Contract Integration
+
+This frontend is ready for smart contract integration. Key integration points:
+
+- `src/contexts/WalletContext.tsx` - Wallet connection management
+- `src/pages/Savings.tsx` - Deposit/withdrawal handlers
+- `src/pages/Borrowing.tsx` - Borrow/repay handlers
+
+Replace the placeholder toast notifications with actual contract calls using Ethers.js.
+
+## Contributing
+
+This project uses:
+- ESLint for code linting
+- TypeScript for type safety
+- Tailwind CSS for styling
+
+## License
+
+MIT
+
+## Resources
+
+- [Lovable Documentation](https://docs.lovable.dev/)
+- [Ethers.js Documentation](https://docs.ethers.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn-ui](https://ui.shadcn.com/)
