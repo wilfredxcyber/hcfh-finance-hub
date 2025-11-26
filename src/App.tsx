@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WalletProvider } from "@/contexts/WalletContext";
 import { Layout } from "@/components/Layout";
+import "@/config/web3modal";
 import Landing from "./pages/Landing";
 import Connect from "./pages/Connect";
 import Dashboard from "./pages/Dashboard";

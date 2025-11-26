@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from '@/contexts/WalletContext';
+import { useWeb3Modal } from '@web3modal/ethers/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Wallet } from 'lucide-react';
 
 const Connect = () => {
-  const { account, connectWallet, isConnecting } = useWallet();
+  const { account } = useWallet();
+  const { open } = useWeb3Modal();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,14 +28,18 @@ const Connect = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           <Button
-            onClick={connectWallet}
-            disabled={isConnecting}
+            onClick={() => open()}
             size="lg"
             className="w-full text-lg h-14 gap-3"
           >
             <Wallet className="w-6 h-6" />
-            {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+            Connect Wallet
           </Button>
+
+          <div className="text-center text-sm text-muted-foreground space-y-2">
+            <p>Supported wallets:</p>
+            <p className="font-medium">MetaMask • WalletConnect • Coinbase Wallet • and more</p>
+          </div>
 
           {account && (
             <div className="text-center p-4 rounded-lg bg-muted">
