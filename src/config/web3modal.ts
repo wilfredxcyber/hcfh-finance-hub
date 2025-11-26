@@ -16,10 +16,21 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 
+// Create Ethers config with Coinbase disabled to avoid cross-origin issues
+const ethersConfig = defaultConfig({
+  metadata,
+  enableCoinbase: false, // Disable Coinbase to prevent cross-origin security errors
+  enableInjected: true,
+  enableEIP6963: true,
+  rpcUrl: 'https://rpc-camp-network-4xje7wy105.t.conduit.xyz',
+  defaultChainId: 325000
+});
+
 // Create Web3Modal
 export const modal = createWeb3Modal({
-  ethersConfig: defaultConfig({ metadata }),
+  ethersConfig,
   chains: [campNetwork],
-  projectId: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6', // This can be any string for demo purposes
-  enableAnalytics: false
+  projectId: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
+  enableAnalytics: false,
+  enableOnramp: false
 });
