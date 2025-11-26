@@ -30,7 +30,7 @@ const ethersConfig = defaultConfig({
 export const modal = createWeb3Modal({
   ethersConfig,
   chains: [campNetwork],
-  projectId: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
+  projectId: 'ab710bb1bf0a4c3ac37c0003ee27e273',
   enableAnalytics: false,
   enableOnramp: false
 });
