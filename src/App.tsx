@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WalletProvider } from "@/contexts/WalletContext";
 import { Layout } from "@/components/Layout";
 import Landing from "./pages/Landing";
+import Connect from "./pages/Connect";
 import Dashboard from "./pages/Dashboard";
 import Savings from "./pages/Savings";
 import Borrowing from "./pages/Borrowing";
@@ -22,7 +23,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/connect" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/connect" element={<Layout><Connect /></Layout>} />
             <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
             <Route path="/savings" element={<Layout><Savings /></Layout>} />
             <Route path="/borrowing" element={<Layout><Borrowing /></Layout>} />
