@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { BrowserProvider, JsonRpcSigner } from 'ethers';
-import { useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { toast } from '@/hooks/use-toast';
 
 interface WalletContextType {
@@ -15,19 +14,35 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
-  const { open } = useWeb3Modal();
-  const { address, isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
-  
   const [account, setAccount] = useState<string | null>(null);
   const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
   const connectWallet = async () => {
+    if (typeof window.ethereum === 'undefined') {
+      toast({
+        title: "MetaMask Not Found",
+        description: "Please install MetaMask to connect your wallet",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsConnecting(true);
-      await open();
+      const ethersProvider = new BrowserProvider(window.ethereum);
+      const accounts = await ethersProvider.send("eth_requestAccounts", []);
+      const ethersSigner = await ethersProvider.getSigner();
+      
+      setAccount(accounts[0]);
+      setProvider(ethersProvider);
+      setSigner(ethersSigner);
+      
+      toast({
+        title: "Wallet Connected",
+        description: `Connected to ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`,
+      });
     } catch (error: any) {
       toast({
         title: "Connection Failed",
@@ -39,37 +54,39 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const disconnectWallet = async () => {
-    await open();
+  const disconnectWallet = () => {
+    setAccount(null);
+    setProvider(null);
+    setSigner(null);
+    toast({
+      title: "Wallet Disconnected",
+      description: "Your wallet has been disconnected",
+    });
   };
 
   useEffect(() => {
-    const updateWalletState = async () => {
-      if (isConnected && address && walletProvider) {
-        try {
-          const ethersProvider = new BrowserProvider(walletProvider);
-          const ethersSigner = await ethersProvider.getSigner();
-          
-          setAccount(address);
-          setProvider(ethersProvider);
-          setSigner(ethersSigner);
-          
-          toast({
-            title: "Wallet Connected",
-            description: `Connected to ${address.slice(0, 6)}...${address.slice(-4)}`,
-          });
-        } catch (error) {
-          console.error('Error setting up wallet:', error);
+    if (typeof window.ethereum !== 'undefined') {
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length === 0) {
+          disconnectWallet();
+        } else {
+          setAccount(accounts[0]);
         }
-      } else {
-        setAccount(null);
-        setProvider(null);
-        setSigner(null);
-      }
-    };
+      };
 
-    updateWalletState();
-  }, [isConnected, address, walletProvider]);
+      const handleChainChanged = () => {
+        window.location.reload();
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
+
+      return () => {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      };
+    }
+  }, []);
 
   return (
     <WalletContext.Provider value={{ account, signer, provider, connectWallet, disconnectWallet, isConnecting }}>
