@@ -21,7 +21,7 @@ const Connect = () => {
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-3xl font-bold">Connect Your Wallet</CardTitle>
           <CardDescription className="text-base">
-            Connect your wallet to access the Herckerton Community Finance Hub.
+            Connect your wallet to access Fortress X.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
