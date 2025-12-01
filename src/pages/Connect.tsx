@@ -38,6 +38,13 @@ const Connect = () => {
           <div className="text-center text-sm text-muted-foreground space-y-2">
             <p>Supported wallets:</p>
             <p className="font-medium">MetaMask • Any injected wallet</p>
+            {typeof window.ethereum === 'undefined' && (
+              <div className="mt-4 p-3 rounded-lg bg-muted/50 border border-border">
+                <p className="text-xs">
+                  💡 If you have MetaMask installed, try opening this app in a new tab or window.
+                </p>
+              </div>
+            )}
           </div>
 
           {account && (
