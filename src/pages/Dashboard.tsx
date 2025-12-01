@@ -1,17 +1,40 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useWallet } from '@/contexts/WalletContext';
 import { Wallet, TrendingUp, PiggyBank, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { getVaultBalance } from '@/lib/contractHelpers';
 
 const Dashboard = () => {
-  const { account } = useWallet();
+  const { account, provider } = useWallet();
+  const [vaultBalance, setVaultBalance] = useState<string>('0.00');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadBalance = async () => {
+      if (!account || !provider) return;
+      
+      try {
+        setIsLoading(true);
+        const balance = await getVaultBalance(account, provider);
+        setVaultBalance(balance);
+      } catch (error) {
+        console.error('Error loading vault balance:', error);
+        setVaultBalance('0.00');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadBalance();
+  }, [account, provider]);
 
   const stats = [
-    { label: 'Total Balance', value: '0.00', unit: 'ETH', icon: Wallet, color: 'text-primary' },
-    { label: 'Total Savings', value: '0.00', unit: 'ETH', icon: PiggyBank, color: 'text-accent' },
-    { label: 'Active Loans', value: '0.00', unit: 'ETH', icon: CreditCard, color: 'text-destructive' },
-    { label: 'Interest Earned', value: '0.00', unit: 'ETH', icon: TrendingUp, color: 'text-success' },
+    { label: 'Vault Balance', value: isLoading ? '...' : vaultBalance, unit: 'HCT', icon: Wallet, color: 'text-primary' },
+    { label: 'Total Savings', value: isLoading ? '...' : vaultBalance, unit: 'HCT', icon: PiggyBank, color: 'text-accent' },
+    { label: 'Active Loans', value: '0.00', unit: 'HCT', icon: CreditCard, color: 'text-destructive' },
+    { label: 'Interest Earned', value: '0.00', unit: 'HCT', icon: TrendingUp, color: 'text-success' },
   ];
 
   if (!account) {
