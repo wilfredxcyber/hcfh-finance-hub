@@ -27,7 +27,7 @@ export const Layout = ({ children }: LayoutProps) => {
             <Link to="/" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent"></div>
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                HCFH
+                Fortress X
               </span>
             </Link>
             

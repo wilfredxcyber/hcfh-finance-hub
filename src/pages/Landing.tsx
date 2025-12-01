@@ -12,13 +12,13 @@ const Landing = () => {
       <section className="relative min-h-[90vh] bg-gradient-to-br from-background via-primary/5 to-accent/5 flex items-center justify-center px-4 py-20">
         <div className="max-w-5xl mx-auto text-center space-y-8 animate-fade-in">
           <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
-            Herckerton Community Finance Hub
+            Fortress X
           </h1>
           <p className="text-2xl md:text-3xl text-foreground font-medium">
             A blockchain-powered community savings and micro-lending platform
           </p>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Helping micro-entrepreneurs in Herckerton access transparent, cooperative financial tools without middlemen.
+            Helping micro-entrepreneurs access transparent, cooperative financial tools without middlemen.
           </p>
           <div className="pt-4">
             <Button
@@ -36,9 +36,9 @@ const Landing = () => {
       {/* About Section */}
       <section className="py-20 px-4 bg-card">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12 text-foreground">About HCFH</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 text-foreground">About Fortress X</h2>
           <p className="text-xl text-center text-muted-foreground mb-8">
-            HCFH is a digital cooperative built on the Camp Network blockchain.
+            Fortress X is a digital cooperative built on the Camp Network blockchain.
           </p>
           <Card className="border-border/50 shadow-card">
             <CardContent className="p-8">
@@ -168,7 +168,7 @@ const Landing = () => {
           <Target className="w-16 h-16 mx-auto mb-8 text-primary" />
           <h2 className="text-4xl font-bold mb-8 text-foreground">Our Vision</h2>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            HCFH is designed to uplift real people — vendors, riders, tailors, artisans, food sellers, students, 
+            Fortress X is designed to uplift real people — vendors, riders, tailors, artisans, food sellers, students, 
             and micro-entrepreneurs — giving them access to financial tools that are normally out of reach. 
             Our goal is to build a self-sustaining, trust-based financial community.
           </p>
@@ -178,7 +178,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="py-12 px-4 bg-card border-t border-border">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h3 className="text-2xl font-bold text-foreground">Herckerton Community Finance Hub</h3>
+          <h3 className="text-2xl font-bold text-foreground">Fortress X</h3>
           <p className="text-muted-foreground">Built for the Camp Network Hackathon 2024</p>
           <p className="text-lg text-primary font-medium">Community • Trust • Transparency</p>
         </div>
