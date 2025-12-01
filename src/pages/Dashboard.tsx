@@ -1,34 +1,121 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useWallet } from '@/contexts/WalletContext';
-import { Wallet, TrendingUp, PiggyBank, CreditCard } from 'lucide-react';
+import { Wallet, TrendingUp, PiggyBank, CreditCard, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Link } from 'react-router-dom';
-import { getVaultBalance } from '@/lib/contractHelpers';
+import { getVaultBalance, getTokenAddress, getTokenDecimals, approveToken, depositToVault, withdrawFromVault } from '@/lib/contractHelpers';
+import { parseUnits } from 'ethers';
+import { useToast } from '@/hooks/use-toast';
 
 const Dashboard = () => {
-  const { account, provider } = useWallet();
+  const { account, provider, signer } = useWallet();
+  const { toast } = useToast();
   const [vaultBalance, setVaultBalance] = useState<string>('0.00');
   const [isLoading, setIsLoading] = useState(true);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const loadBalance = async () => {
+    if (!account || !provider) return;
+    
+    try {
+      setIsLoading(true);
+      const balance = await getVaultBalance(account, provider);
+      setVaultBalance(balance);
+    } catch (error) {
+      console.error('Error loading vault balance:', error);
+      setVaultBalance('0.00');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadBalance = async () => {
-      if (!account || !provider) return;
-      
-      try {
-        setIsLoading(true);
-        const balance = await getVaultBalance(account, provider);
-        setVaultBalance(balance);
-      } catch (error) {
-        console.error('Error loading vault balance:', error);
-        setVaultBalance('0.00');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     loadBalance();
   }, [account, provider]);
+
+  const handleDeposit = async () => {
+    if (!signer || !provider || !depositAmount) return;
+
+    try {
+      setIsProcessing(true);
+      
+      const tokenAddress = await getTokenAddress(provider);
+      const decimals = await getTokenDecimals(tokenAddress, provider);
+      const amount = parseUnits(depositAmount, decimals);
+
+      // Step 1: Approve token
+      toast({
+        title: "Approving tokens...",
+        description: "Please confirm the approval transaction",
+      });
+      
+      await approveToken(tokenAddress, amount.toString(), signer);
+      
+      // Step 2: Deposit
+      toast({
+        title: "Depositing...",
+        description: "Please confirm the deposit transaction",
+      });
+      
+      await depositToVault(amount.toString(), signer);
+      
+      toast({
+        title: "Success!",
+        description: `Deposited ${depositAmount} HCT to vault`,
+      });
+      
+      setDepositAmount('');
+      await loadBalance();
+    } catch (error: any) {
+      toast({
+        title: "Deposit Failed",
+        description: error?.message || "Failed to deposit tokens",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!signer || !provider || !withdrawAmount) return;
+
+    try {
+      setIsProcessing(true);
+      
+      const tokenAddress = await getTokenAddress(provider);
+      const decimals = await getTokenDecimals(tokenAddress, provider);
+      const amount = parseUnits(withdrawAmount, decimals);
+
+      toast({
+        title: "Withdrawing...",
+        description: "Please confirm the withdrawal transaction",
+      });
+      
+      await withdrawFromVault(amount.toString(), signer);
+      
+      toast({
+        title: "Success!",
+        description: `Withdrawn ${withdrawAmount} HCT from vault`,
+      });
+      
+      setWithdrawAmount('');
+      await loadBalance();
+    } catch (error: any) {
+      toast({
+        title: "Withdrawal Failed",
+        description: error?.message || "Failed to withdraw tokens",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const stats = [
     { label: 'Vault Balance', value: isLoading ? '...' : vaultBalance, unit: 'HCT', icon: Wallet, color: 'text-primary' },
@@ -82,6 +169,73 @@ const Dashboard = () => {
             </Card>
           );
         })}
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="shadow-[var(--shadow-card)] transition-all">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ArrowDownToLine className="h-5 w-5 text-success" />
+              Deposit to Vault
+            </CardTitle>
+            <CardDescription>Add tokens to your vault balance</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="deposit-amount">Amount (HCT)</Label>
+              <Input
+                id="deposit-amount"
+                type="number"
+                placeholder="0.00"
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+                disabled={isProcessing}
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <Button 
+              className="w-full" 
+              onClick={handleDeposit}
+              disabled={!depositAmount || isProcessing || !signer}
+            >
+              {isProcessing ? 'Processing...' : 'Deposit'}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-[var(--shadow-card)] transition-all">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ArrowUpFromLine className="h-5 w-5 text-primary" />
+              Withdraw from Vault
+            </CardTitle>
+            <CardDescription>Withdraw tokens from your balance</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="withdraw-amount">Amount (HCT)</Label>
+              <Input
+                id="withdraw-amount"
+                type="number"
+                placeholder="0.00"
+                value={withdrawAmount}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+                disabled={isProcessing}
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <Button 
+              variant="outline"
+              className="w-full" 
+              onClick={handleWithdraw}
+              disabled={!withdrawAmount || isProcessing || !signer}
+            >
+              {isProcessing ? 'Processing...' : 'Withdraw'}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
