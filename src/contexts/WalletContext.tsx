@@ -22,8 +22,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const connectWallet = async () => {
     if (typeof window.ethereum === 'undefined') {
       toast({
-        title: "MetaMask Not Found",
-        description: "Please install MetaMask to connect your wallet",
+        title: "Wallet Not Detected",
+        description: "Please install MetaMask or open this app in a new tab to connect your wallet",
         variant: "destructive",
       });
       return;
