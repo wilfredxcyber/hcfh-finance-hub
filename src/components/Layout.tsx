@@ -1,6 +1,6 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Wallet, LayoutDashboard, PiggyBank, CreditCard, ExternalLink } from 'lucide-react';
+import { Wallet, LayoutDashboard, PiggyBank, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWallet } from '@/contexts/WalletContext';
 import { cn } from '@/lib/utils';
@@ -12,15 +12,6 @@ interface LayoutProps {
 export const Layout = ({ children }: LayoutProps) => {
   const { account, connectWallet, disconnectWallet, isConnecting } = useWallet();
   const location = useLocation();
-  const [isEthereumAvailable, setIsEthereumAvailable] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    setIsEthereumAvailable(typeof window.ethereum !== 'undefined');
-  }, []);
-
-  const handleOpenInNewTab = () => {
-    window.open(window.location.href, '_blank');
-  };
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -75,11 +66,6 @@ export const Layout = ({ children }: LayoutProps) => {
                   Disconnect
                 </Button>
               </div>
-            ) : isEthereumAvailable === false ? (
-              <Button onClick={handleOpenInNewTab} className="gap-2">
-                <ExternalLink className="h-4 w-4" />
-                Open in New Tab
-              </Button>
             ) : (
               <Button onClick={connectWallet} disabled={isConnecting} className="gap-2">
                 <Wallet className="h-4 w-4" />
