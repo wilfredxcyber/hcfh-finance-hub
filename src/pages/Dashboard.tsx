@@ -1,120 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useWallet } from '@/contexts/WalletContext';
+import { useVaultContract } from '@/hooks/useVaultContract';
 import { Wallet, TrendingUp, PiggyBank, CreditCard, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link } from 'react-router-dom';
-import { getVaultBalance, getTokenAddress, getTokenDecimals, approveToken, depositToVault, withdrawFromVault } from '@/lib/contractHelpers';
-import { parseUnits } from 'ethers';
-import { useToast } from '@/hooks/use-toast';
 
 const Dashboard = () => {
-  const { account, provider, signer } = useWallet();
-  const { toast } = useToast();
-  const [vaultBalance, setVaultBalance] = useState<string>('0.00');
-  const [isLoading, setIsLoading] = useState(true);
+  const { account } = useWallet();
+  const { vaultBalance, isLoading, isProcessing, deposit, withdraw } = useVaultContract();
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const loadBalance = async () => {
-    if (!account || !provider) return;
-    
-    try {
-      setIsLoading(true);
-      const balance = await getVaultBalance(account, provider);
-      setVaultBalance(balance);
-    } catch (error) {
-      console.error('Error loading vault balance:', error);
-      setVaultBalance('0.00');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadBalance();
-  }, [account, provider]);
 
   const handleDeposit = async () => {
-    if (!signer || !provider || !depositAmount) return;
-
-    try {
-      setIsProcessing(true);
-      
-      const tokenAddress = await getTokenAddress(provider);
-      const decimals = await getTokenDecimals(tokenAddress, provider);
-      const amount = parseUnits(depositAmount, decimals);
-
-      // Step 1: Approve token
-      toast({
-        title: "Approving tokens...",
-        description: "Please confirm the approval transaction",
-      });
-      
-      await approveToken(tokenAddress, amount.toString(), signer);
-      
-      // Step 2: Deposit
-      toast({
-        title: "Depositing...",
-        description: "Please confirm the deposit transaction",
-      });
-      
-      await depositToVault(amount.toString(), signer);
-      
-      toast({
-        title: "Success!",
-        description: `Deposited ${depositAmount} HCT to vault`,
-      });
-      
-      setDepositAmount('');
-      await loadBalance();
-    } catch (error: any) {
-      toast({
-        title: "Deposit Failed",
-        description: error?.message || "Failed to deposit tokens",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
-    }
+    if (!depositAmount) return;
+    const success = await deposit(depositAmount);
+    if (success) setDepositAmount('');
   };
 
   const handleWithdraw = async () => {
-    if (!signer || !provider || !withdrawAmount) return;
-
-    try {
-      setIsProcessing(true);
-      
-      const tokenAddress = await getTokenAddress(provider);
-      const decimals = await getTokenDecimals(tokenAddress, provider);
-      const amount = parseUnits(withdrawAmount, decimals);
-
-      toast({
-        title: "Withdrawing...",
-        description: "Please confirm the withdrawal transaction",
-      });
-      
-      await withdrawFromVault(amount.toString(), signer);
-      
-      toast({
-        title: "Success!",
-        description: `Withdrawn ${withdrawAmount} HCT from vault`,
-      });
-      
-      setWithdrawAmount('');
-      await loadBalance();
-    } catch (error: any) {
-      toast({
-        title: "Withdrawal Failed",
-        description: error?.message || "Failed to withdraw tokens",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
-    }
+    if (!withdrawAmount) return;
+    const success = await withdraw(withdrawAmount);
+    if (success) setWithdrawAmount('');
   };
 
   const stats = [
@@ -134,7 +43,7 @@ const Dashboard = () => {
             </div>
             <CardTitle className="text-2xl">Connect Your Wallet</CardTitle>
             <CardDescription>
-              Connect your wallet to access the Herckerton Community Finance Hub
+              Connect your wallet to access Fortress X
             </CardDescription>
           </CardHeader>
         </Card>
@@ -197,7 +106,7 @@ const Dashboard = () => {
             <Button 
               className="w-full" 
               onClick={handleDeposit}
-              disabled={!depositAmount || isProcessing || !signer}
+              disabled={!depositAmount || isProcessing}
             >
               {isProcessing ? 'Processing...' : 'Deposit'}
             </Button>
@@ -230,7 +139,7 @@ const Dashboard = () => {
               variant="outline"
               className="w-full" 
               onClick={handleWithdraw}
-              disabled={!withdrawAmount || isProcessing || !signer}
+              disabled={!withdrawAmount || isProcessing}
             >
               {isProcessing ? 'Processing...' : 'Withdraw'}
             </Button>
