@@ -2,7 +2,7 @@ Fortress X — Decentralized Savings & Micro-Lending Protocol (Camp Testnet)
 
 Fortress X is a lightweight DeFi protocol built to provide secure token savings, collateral-backed borrowing, and transparent micro-loans for low-income earners and micro-entrepreneurs. All lending operations are handled by smart contracts on the Camp Testnet.
 
-⸻
+
 
 Key Features
 	•	Tokenized savings vault
@@ -10,7 +10,7 @@ Key Features
 	•	Fair and transparent on-chain micro-lending
 	•	Simple and efficient contract architecture
 
-⸻
+
 
 Project Architecture
 
@@ -25,7 +25,7 @@ Tech Stack
 	•	React + Vite
 	•	Ethers v6
 
-⸻
+
 
 Deployment Guide
 	1.	Deploy Token.sol
@@ -35,7 +35,7 @@ Deployment Guide
 	•	Constructor parameters: vaultAddress, tokenAddress
 	4.	Mint test tokens to your wallet
 
-⸻
+
 
 Manual Testing
 
@@ -54,7 +54,7 @@ Repayment
 	•	Call approve(token, repayAmount)
 	•	Call lending.repay(repayAmount)
 
-⸻
+
 
 Frontend Setup
 
@@ -72,7 +72,7 @@ Frontend Features
 	•	Deposit and withdraw
 	•	Borrow and repay
 
-⸻
+
 
 AI Integration Roadmap
 	•	Borrower risk scoring
@@ -81,19 +81,19 @@ AI Integration Roadmap
 	•	Fraud detection
 	•	Yield optimization
 
-⸻
+
 
 Project Roadmap
 	•	MVP development
 	•	AI feature expansion
 	•	DAO governance integration
 
-⸻
+
 
 License
 
 MIT License
 
-⸻
+
 
 
